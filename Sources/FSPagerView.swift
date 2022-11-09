@@ -192,6 +192,13 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
         }
     }
     
+    /// Whether FSPagerCollectionView are clipsToBounds.
+    open var collectionViewClipsToBounds: Bool = true {
+        didSet {
+            collectionView.clipsToBounds = collectionViewClipsToBounds
+        }
+    }
+    
     // MARK: - Public readonly-properties
     
     /// Returns whether the user has touched the content to initiate scrolling.
