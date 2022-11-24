@@ -488,6 +488,15 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
         self.collectionView.reloadData()
     }
     
+    /// Animates multiple insert, delete, reload, and move operations as a group.
+    ///
+    /// - Parameters:
+    ///   - updates: The block that performs the relevant insert, delete, reload, or move operations.
+    ///   - completion: A completion handler block to execute when all of the operations are finished. This block takes a single Boolean parameter that contains the value `true` if all of the related animations completed successfully or `false` if they were interrupted. This parameter may be `nil`.
+    open func performBatchUpdates(_ updates: (() -> Void)?, completion: ((Bool) -> Void)?) {
+        self.collectionView.performBatchUpdates(updates, completion: completion)
+    }
+    
     /// Selects the item at the specified index and optionally scrolls it into view.
     ///
     /// - Parameters:
