@@ -19,6 +19,7 @@ public enum FSPagerViewTransformerType: Int {
     case ferrisWheel
     case invertedFerrisWheel
     case cubic
+    case overlapMulti
 }
 
 open class FSPagerViewTransformer: NSObject {
@@ -28,6 +29,7 @@ open class FSPagerViewTransformer: NSObject {
     
     @objc open var minimumScale: CGFloat = 0.65
     @objc open var minimumAlpha: CGFloat = 0.6
+    @objc open var maxOverlapScale: CGFloat = 0.83
     
     @objc
     public init(type: FSPagerViewTransformerType) {
@@ -159,6 +161,19 @@ open class FSPagerViewTransformer: NSObject {
             attributes.alpha = alpha
             let zIndex = (1-abs(position)) * 10
             attributes.zIndex = Int(zIndex)
+        case .overlapMulti:
+            guard scrollDirection == .horizontal else {
+                // This type doesn't support vertical mode
+                return
+            }
+            let computeScale = 1 - (1-self.maxOverlapScale) * abs(position)
+            let scale = max(computeScale, minimumScale)
+            let transform = CGAffineTransform(scaleX: scale, y: scale)
+            attributes.transform = transform
+            let alpha = (self.minimumAlpha + (1-abs(position))*(1-self.minimumAlpha))
+            attributes.alpha = alpha
+            let zIndex = (1-abs(position)) * 10
+            attributes.zIndex = Int(zIndex)
         case .coverFlow:
             guard scrollDirection == .horizontal else {
                 // This type doesn't support vertical mode
@@ -246,6 +261,11 @@ open class FSPagerViewTransformer: NSObject {
                 return 0
             }
             return pagerView.itemSize.width * -self.minimumScale * 0.6
+        case .overlapMulti:
+            guard scrollDirection == .horizontal else {
+                return 0
+            }
+            return pagerView.itemSize.width * -0.8
         case .linear:
             guard scrollDirection == .horizontal else {
                 return 0
